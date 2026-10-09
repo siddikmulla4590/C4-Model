@@ -1,0 +1,183 @@
+# Bubble Sort Profiling System
+
+## 1. Project Overview
+
+This project compares two implementations of Bubble Sort:
+
+- **Unoptimized Bubble Sort** — uses the standard nested-loop approach.
+- **Optimized Bubble Sort** — uses a `swapped` flag to stop early when a complete pass makes no swaps.
+
+The project measures the total execution time of both versions using the same generated datasets. Four C4 diagrams describe the system from the overall context to the code-level functions.
+
+## 2. Objectives
+
+- Implement unoptimized and optimized Bubble Sort.
+- Compare both implementations using equivalent input datasets.
+- Measure and display the total execution time of each version.
+- Explain the optimization and its time complexity.
+- Document the architecture with four C4 Model diagrams.
+
+## 3. Technologies
+
+- **Language:** Python
+- **Modules used in the supplied code:** `random`, `time`
+- **Architecture documentation:** C4 Model
+- **Profiler shown in the diagrams:** py-spy
+
+> **Implementation note:** The supplied `sort.py` script uses `random` and `time` to generate datasets and measure elapsed time. Although py-spy and flame-graph output appear in the C4 diagrams, the supplied script does not itself invoke py-spy or generate a flame graph.
+
+## 4. Project Structure
+
+Keep the diagram images in the `c4-diagrams` folder alongside the Markdown files so GitHub can display them.
+
+```text
+project/
+├── sort.py
+├── README.md
+├── CONTRIBUTION_LOG.md
+└── c4-diagrams/
+    ├── context-diagram.jpg
+    ├── container-diagram.jpg
+    ├── component-diagram.jpg
+    └── code-level-diagram.jpg
+```
+
+## 5. Algorithms
+
+### 5.1 Unoptimized Bubble Sort
+
+The `bubble_sort_unoptimized(arr)` function compares adjacent elements and swaps them when the left element is greater than the right element. It does not stop early if the array becomes sorted before all passes are completed.
+
+**Complexity**
+- Best case: `O(N²)`
+- Average case: `O(N²)`
+- Worst case: `O(N²)`
+- Auxiliary space: `O(1)`
+
+### 5.2 Optimized Bubble Sort
+
+The `bubble_sort_optimized(arr)` function initializes `swapped = False` at the beginning of each pass. Whenever a swap occurs, the flag becomes `True`. If a complete pass makes no swaps, `break` stops the algorithm because the array is already sorted.
+
+**Complexity**
+- Best case: `O(N)`
+- Average case: `O(N²)`
+- Worst case: `O(N²)`
+- Auxiliary space: `O(1)`
+
+### 5.3 Comparison
+
+| Feature | Unoptimized | Optimized |
+|---|---|---|
+| Adjacent comparison and swapping | Yes | Yes |
+| Uses `swapped` flag | No | Yes |
+| Early termination | No | Yes |
+| Best-case time | `O(N²)` | `O(N)` |
+| Average-case time | `O(N²)` | `O(N²)` |
+| Worst-case time | `O(N²)` | `O(N²)` |
+| Auxiliary space | `O(1)` | `O(1)` |
+
+The key improvement is the optimized version's early-stop condition. Its average and worst-case time complexity remain quadratic.
+
+## 6. Benchmark Workload
+
+The supplied script sets:
+
+```python
+ARRAY_SIZE = 3000
+NUM_RUNS = 10
+```
+
+It generates 10 datasets, each containing 3,000 random integers between 1 and 100,000. The same base datasets are used for both algorithms, and `dataset.copy()` is passed to each sorting function. This prevents one algorithm from receiving an input already modified by the other.
+
+The script records the total elapsed time for each algorithm with Python's `time` module and prints both totals. Actual timings vary with the computer and execution environment; use the values from your own run rather than fixed example numbers.
+
+## 7. C4 Model Diagrams
+
+The following diagrams are included in the repository under `c4-diagrams/`. Each diagram appears beside its corresponding explanation.
+
+### Level 1 — System Context Diagram
+
+This diagram presents the Bubble Sort Profiling System at a high level. It shows the Student / Operator starting the workload, the profiling system, and the Python Runtime + py-spy Profiler. It also identifies the workload as 10 datasets × 3,000 integers and the intended output as an execution-time comparison and profiling visualization.
+
+![Level 1: System Context Diagram](c4-diagrams/context-diagram.jpg)
+
+### Level 2 — Container Diagram
+
+This diagram presents five main containers and their data flow:
+
+1. **Input & Workload Module** — generates the 10 × 3,000 arrays.
+2. **Sorting Engine** — contains the unoptimized and optimized Bubble Sort variants.
+3. **Benchmark Runner** — executes and times both variants.
+4. **Profiler** — represents py-spy sampling.
+5. **Results & Visualization** — represents timing results and flame-graph output.
+
+![Level 2: Container Diagram](c4-diagrams/container-diagram.jpg)
+
+### Level 3 — Component Diagram
+
+This diagram expands the Sorting Engine into its internal components. It shows the unoptimized and optimized sorting functions, the shared compare-and-swap logic, and the Early-Stop Controller using the `swapped` flag and `break`. It also highlights that both variants operate on copied datasets for a fair comparison.
+
+![Level 3: Component Diagram](c4-diagrams/component-diagram.jpg)
+
+### Level 4 — Code / Function Diagram
+
+This diagram connects the architecture to the main code elements: `sort.py`, `bubble_sort_unoptimized(arr)`, `bubble_sort_optimized(arr)`, `run_profiling_workload()`, and the `random` and `time` modules. The diagram also shows py-spy as part of the documented profiling design; the supplied script does not directly run that command.
+
+![Level 4: Code / Function Diagram](c4-diagrams/code-level-diagram.jpg)
+
+## 8. Program Flow
+
+```text
+Start
+  |
+  v
+Set array size to 3000 and runs to 10
+  |
+  v
+Generate 10 random datasets
+  |
+  +----------------------------+
+  |                            |
+  v                            v
+Run unoptimized sort       Run optimized sort
+on dataset copies          on dataset copies
+  |                            |
+  v                            v
+Measure total time         Measure total time
+  |                            |
+  +-------------+--------------+
+                |
+                v
+        Print both timings
+                |
+                v
+               End
+```
+
+## 9. How to Run
+
+Make sure Python is installed. From the project directory, run:
+
+```bash
+python sort.py
+```
+
+The script generates the datasets, runs both sorting implementations, and prints their total execution times.
+
+## 10. Expected Output Format
+
+```text
+Starting workload: Array Size = 3000, Runs = 10...
+
+Running Unoptimized Bubble Sort...
+Unoptimized Total Time: ... seconds
+
+Running Optimized Bubble Sort...
+Optimized Total Time: ... seconds
+```
+
+The numbers represented by `...` are produced at runtime and depend on the execution environment.
+
+## 11. Conclusion
+
+This project compares standard Bubble Sort with a version that can terminate early when a pass makes no swaps. Using copies of the same datasets makes the timing comparison more consistent. The four C4 diagrams document the system at the context, container, component, and code/function levels.
